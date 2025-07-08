@@ -21,5 +21,7 @@ export default function SideDrawer(props) {
     </CSSTransition>
   );
 
+  //creating and returning react portal:
+  //For: keeping component outside parent hierarchy but still logically connected
   return ReactDOM.createPortal(content, document.getElementById("drawer-hook"));
 }

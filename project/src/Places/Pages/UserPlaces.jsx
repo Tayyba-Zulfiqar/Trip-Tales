@@ -4,8 +4,8 @@ import PlaceList from "../Components/PlaceList";
 const DUMMY_PLACES = [
   {
     id: "p1",
-    title: "Empire state building",
-    description: "One of the most famous sky scrapers in the world",
+    title: "Empire State Building",
+    description: "One of the most famous skyscrapers in the world",
     imageUrl: "../../../Public/Imgs/place.jpg",
     address: "20 W 34th St., New York, NY 10001",
     location: {
@@ -16,13 +16,13 @@ const DUMMY_PLACES = [
   },
   {
     id: "p2",
-    title: "Empire state building",
-    description: "One of the most famous sky scrapers in the world",
+    title: "Eiffel Tower",
+    description: "The most iconic landmark in Paris",
     imageUrl: "../../../Public/Imgs/place.jpg",
-    address: "20 W 34th St., New York, NY 10001",
+    address: "Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France",
     location: {
-      lat: 40.7484405,
-      lng: -73.9878584,
+      lat: 48.8584,
+      lng: 2.2945,
     },
     creator: "u2",
   },
