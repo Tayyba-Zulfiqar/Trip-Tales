@@ -31,8 +31,6 @@ const formReducer = (state, action) => {
         isValid: formIsValid,
       };
 
-    case "DESCRIPTION-CHANGE":
-
     default:
       return state;
   }
