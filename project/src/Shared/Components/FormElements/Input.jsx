@@ -1,5 +1,5 @@
 import "./Input.css";
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import { validate } from "../../Util/Validators";
 
 //multiple states management:
@@ -31,6 +31,14 @@ export default function Input(props) {
     isValid: false,
     isTouched: false,
   });
+
+  //Use effect:
+  const { id, onInput } = props;
+  const { value, isValid } = inputState;
+
+  useEffect(() => {
+    onInput(id, value, isValid);
+  }, [id, onInput, value, isValid]);
 
   //function to handle changes:
   const changeHandler = (event) => {
