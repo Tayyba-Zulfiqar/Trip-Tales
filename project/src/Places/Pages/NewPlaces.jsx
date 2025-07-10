@@ -1,4 +1,4 @@
-import "./NewPlaces.css";
+import "./PlaceForm.css";
 import { useCallback, useReducer } from "react";
 import Input from "../../Shared/Components/FormElements/Input";
 import {
@@ -45,6 +45,10 @@ export default function NewPlaces() {
         isValid: false,
       },
       description: {
+        value: "",
+        isValid: false,
+      },
+      address: {
         value: "",
         isValid: false,
       },

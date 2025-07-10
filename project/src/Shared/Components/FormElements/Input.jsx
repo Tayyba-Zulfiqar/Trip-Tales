@@ -27,9 +27,9 @@ export default function Input(props) {
   //Storing and validating states:
 
   const [inputState, dispatch] = useReducer(inputReducer, {
-    value: "",
+    value: props.value || "",
     isValid: false,
-    isTouched: false,
+    isTouched: props.valid || false,
   });
 
   //Use effect:
