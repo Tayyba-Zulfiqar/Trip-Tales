@@ -1,45 +1,17 @@
 import "./PlaceForm.css";
-import { useCallback, useReducer } from "react";
+
 import Input from "../../Shared/Components/FormElements/Input";
 import {
   VALIDATOR_REQUIRE,
   VALIDATOR_MINLENGTH,
 } from "../../Shared/Util/Validators";
 import Button from "../../Shared/Components/FormElements/Button";
-
-//form reducer function:
-const formReducer = (state, action) => {
-  switch (action.type) {
-    case "INPUT-CHANGE":
-      let formIsValid = true;
-      //checking if all inputs in form are valid:
-      for (const inputId in state.inputs) {
-        if (inputId === action.inputId) {
-          //combining prev value of formIsValid with actual isValid so that if one will be false,
-          //overall will become false too
-          formIsValid = formIsValid && action.isValid;
-        } else {
-          formIsValid = formIsValid && state.inputs[inputId].isValid;
-        }
-      }
-      return {
-        ...state,
-        inputs: {
-          ...state.inputs,
-          [action.inputId]: { value: action.value, isValid: action.isValid },
-        },
-        isValid: formIsValid,
-      };
-
-    default:
-      return state;
-  }
-};
+import useForm from "../../Shared/Hooks/Form-hook";
 
 export default function NewPlaces() {
-  //Managing states of both inputs:
-  const [formState, dispatch] = useReducer(formReducer, {
-    inputs: {
+  //calling useForm custon hook:
+  const [formState, inputHandler] = useForm(
+    {
       title: {
         value: "",
         isValid: false,
@@ -53,18 +25,8 @@ export default function NewPlaces() {
         isValid: false,
       },
     },
-    isValid: false,
-  });
-
-  // change handler for input fields:
-  const inputHandler = useCallback((id, value, isValid) => {
-    dispatch({
-      type: "INPUT-CHANGE",
-      value: value,
-      isValid: isValid,
-      inputId: id,
-    });
-  }, []);
+    false
+  );
 
   //submission handler:
   const submissionHandler = (e) => {
