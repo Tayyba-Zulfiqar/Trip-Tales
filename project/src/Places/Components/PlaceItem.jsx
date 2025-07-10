@@ -21,6 +21,8 @@ export default function PlaceItem(props) {
     console.log("delete");
   };
 
+  //returning ui:
+
   return (
     <>
       <Modal
