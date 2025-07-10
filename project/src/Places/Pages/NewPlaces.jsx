@@ -62,9 +62,15 @@ export default function NewPlaces() {
     });
   }, []);
 
+  //submission handler:
+  const submissionHandler = (e) => {
+    e.preventDefault();
+    console.log(formState.inputs); //send this to the backend
+  };
+
   //returning ui:
   return (
-    <form className="place-form">
+    <form className="place-form" onSubmit={submissionHandler}>
       <Input
         id="title"
         element="input"
@@ -81,6 +87,15 @@ export default function NewPlaces() {
         label="description"
         validators={[VALIDATOR_MINLENGTH(5)]}
         errorText="please enter a valid description (at least 5 characters)"
+        onInput={inputHandler}
+      />
+      <Input
+        id="address"
+        element="input"
+        type="text"
+        label="address"
+        validators={[VALIDATOR_REQUIRE()]}
+        errorText="please enter a valid address" //later check if address exist on the backend
         onInput={inputHandler}
       />
       <Button type="submit" disabled={!formState.isValid}>
