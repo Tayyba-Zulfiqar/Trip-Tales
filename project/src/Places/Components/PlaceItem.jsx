@@ -21,7 +21,7 @@ export default function PlaceItem(props) {
     console.log("delete");
   };
 
-  //returning ui:
+  //returning ui of component:
 
   return (
     <>
