@@ -6,7 +6,9 @@ import {
   VALIDATOR_MINLENGTH,
 } from "../../Shared/Util/Validators";
 import "./PlaceForm.css";
+import Card from "../../Shared/Components/UI-Elements/Card";
 
+import { useEffect, useState } from "react";
 import useForm from "../../Shared/Hooks/Form-hook";
 
 const DUMMY_PLACES = [
@@ -37,15 +39,54 @@ const DUMMY_PLACES = [
 ];
 
 export default function UpdatePlace(props) {
+  //handling loading state:
+  const [isLoading, setIsLoading] = useState(true);
   //getting id from params:
   const placeId = useParams().placeId;
+
+  //setting up initial data for useForm custom hook:
+  const [formState, inputHandler, setFormData] = useForm(
+    {
+      title: {
+        value: "",
+        isValid: false,
+      },
+      description: {
+        value: "",
+        isValid: false,
+      },
+    },
+    false
+  );
 
   //finding matched if:
   const identifiedPlace = DUMMY_PLACES.find((place) => place.id === placeId);
   if (!identifiedPlace) {
     return (
       <div className="center">
-        <h2>Could not find Place</h2>
+        <Card>
+          <h2>Could not find Place</h2>
+        </Card>
+      </div>
+    );
+  }
+  //initializing form:
+  useEffect(() => {
+    if (identifiedPlace) {
+      setFormData({
+        title: { value: identifiedPlace.title, isValid: true },
+        description: { value: identifiedPlace.description, isValid: true },
+      });
+    }
+
+    setIsLoading(false);
+  }, [setFormData, identifiedPlace]);
+
+  //if data has not been loaded yet:
+  if (isLoading) {
+    return (
+      <div className="center">
+        <h2>Loading...</h2>
       </div>
     );
   }
@@ -55,21 +96,6 @@ export default function UpdatePlace(props) {
     event.preventDefault();
     console.log(formState.inputs);
   };
-
-  //setting up initial data for useForm custom hook:
-  const [formState, inputHandler] = useForm(
-    {
-      title: {
-        value: identifiedPlace.title,
-        isValid: true,
-      },
-      description: {
-        value: identifiedPlace.description,
-        isValid: true,
-      },
-    },
-    true
-  );
 
   //returning UI:
   return (

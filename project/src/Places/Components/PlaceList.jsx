@@ -1,9 +1,18 @@
 import PlaceItem from "./PlaceItem";
 import "./PlaceList.css";
+import Card from "../../Shared/Components/UI-Elements/Card";
+import Button from "../../Shared/Components/FormElements/Button";
 
 export default function PlaceList(props) {
   if (props.items.length === 0) {
-    return <h2 className="place-list__fallback">No places found.</h2>;
+    return (
+      <div className="place-list center">
+        <Card>
+          <h2>No place found. May be Create one?</h2>
+          <Button to="/places/new">SHARE PLACE</Button>
+        </Card>
+      </div>
+    );
   }
 
   return (

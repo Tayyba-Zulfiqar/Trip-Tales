@@ -1,12 +1,11 @@
 import "./UserItems.css";
 import { Link } from "react-router-dom";
 import Avatar from "../../Shared/Components/UI-Elements/Avatar.jsx";
-import Card from "../../Shared/Components/UI-Elements/Card.jsx";
 
 export default function UsersItems(props) {
   return (
     <li className="user-item">
-      <Card className="user-item__content">
+      <div className="user-item__content">
         <Link to={`/${props.id}/places`}>
           <div className="user-item__image">
             <Avatar image={props.image} alt={props.name} />
@@ -18,7 +17,7 @@ export default function UsersItems(props) {
             </h3>
           </div>
         </Link>
-      </Card>
+      </div>
     </li>
   );
 }

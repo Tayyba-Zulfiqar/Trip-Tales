@@ -5,4 +5,6 @@
   border-radius: 6px;
   overflow: hidden;
   background: white;
+  padding-left: 15px;
+  padding-right: 15px;
 }
