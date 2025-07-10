@@ -5,10 +5,21 @@ import Button from "../../Shared/Components/FormElements/Button";
 import Modal from "../../Shared/Components/UI-Elements/Modal";
 
 export default function PlaceItem(props) {
+  //Managing states of map:
   const [showMap, setShowMap] = useState(false);
 
+  //Confirmation box state management:
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  //Map state managing functions:
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
+  //Confirm box state managing functions:
+  const showDeleteWarningHandler = () => setShowConfirmModal(true);
+  const cancelDeleteHandler = () => setShowConfirmModal(false);
+  const confirmDeleteHandler = () => {
+    setShowConfirmModal(false);
+    console.log("delete");
+  };
 
   return (
     <>
@@ -43,6 +54,27 @@ export default function PlaceItem(props) {
           ></iframe>
         </div>
       </Modal>
+      <Modal
+        show={showConfirmModal}
+        onCancel={cancelDeleteHandler}
+        header="Are you sure?"
+        footerClass="place-item__modal-actions"
+        footer={
+          <>
+            <Button inverse onClick={cancelDeleteHandler}>
+              CANCEL
+            </Button>
+            <Button danger onClick={confirmDeleteHandler}>
+              DELETE
+            </Button>
+          </>
+        }
+      >
+        <p>
+          Do you want to proceed and delete this place? Please note that it
+          can't be undone thereafter.
+        </p>
+      </Modal>
 
       <li className="place-item">
         <Card className="place-item__content">
@@ -59,7 +91,9 @@ export default function PlaceItem(props) {
               View on map
             </Button>
             <Button to={`/places/${props.id}`}>Edit</Button>
-            <Button danger>Delete</Button>
+            <Button danger onClick={showDeleteWarningHandler}>
+              Delete
+            </Button>
           </div>
         </Card>
       </li>
