@@ -1,4 +1,5 @@
 import express from "express";
+import placesRoutes from "./Routes/Places-routes.js";
 //create app using express:
 const app = express();
 
@@ -8,11 +9,8 @@ const PORT = 5000;
 //Middleware: tell server to expect json data as incoming req
 app.use(express.json());
 
-//setting up app response to send back HTML:
-app.get("/", (req, res) => {
-  res.send("backend is running");
-});
-
+//using route as middleware:
+app.use("/api/places", placesRoutes);
 //listen to incoming request:
 app.listen(PORT, () => {
   console.log(`server has started at PORT : ${PORT}`);
