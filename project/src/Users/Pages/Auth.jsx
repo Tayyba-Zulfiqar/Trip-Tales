@@ -8,9 +8,13 @@ import {
   VALIDATOR_MINLENGTH,
   VALIDATOR_REQUIRE,
 } from "../../Shared/Util/Validators";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../../Shared/Context/Auth-context.js";
 
 export default function Authenticate(props) {
+  //using context hook:
+  const auth = useContext(AuthContext);
+
   //managing state for switching mode:
   const [isLoginMode, setIsLoginMode] = useState(false);
   //using custom hook:
@@ -32,6 +36,7 @@ export default function Authenticate(props) {
   const authSubmitHandler = (event) => {
     event.preventDefault();
     console.log(formState.inputs);
+    auth.login();
   };
 
   //switch mode handler:

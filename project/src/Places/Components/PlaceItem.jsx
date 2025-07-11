@@ -1,10 +1,13 @@
 import "./PlaceItem.css";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Card from "../../Shared/Components/UI-Elements/Card";
 import Button from "../../Shared/Components/FormElements/Button";
 import Modal from "../../Shared/Components/UI-Elements/Modal";
+import AuthContext from "../../Shared/Context/Auth-context.js";
 
 export default function PlaceItem(props) {
+  //using context hook:
+  const auth = useContext(AuthContext);
   //Managing states of map:
   const [showMap, setShowMap] = useState(false);
 
@@ -92,10 +95,14 @@ export default function PlaceItem(props) {
             <Button inverse onClick={openMapHandler}>
               View on map
             </Button>
-            <Button to={`/places/${props.id}`}>Edit</Button>
-            <Button danger onClick={showDeleteWarningHandler}>
-              Delete
-            </Button>
+            {auth.isLoggedIn && (
+              <Button to={`/places/${props.id}`}>Edit</Button>
+            )}
+            {auth.isLoggedIn && (
+              <Button danger onClick={showDeleteWarningHandler}>
+                Delete
+              </Button>
+            )}
           </div>
         </Card>
       </li>
