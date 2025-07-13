@@ -1,4 +1,5 @@
 import express from "express";
+import HttpError from "../models/http-error.js";
 
 //getting router from express package:
 const router = express.Router();
@@ -39,6 +40,9 @@ router.get("/:pid", (req, res, next) => {
   const place = DUMMY_PLACES.find((p) => {
     return p.id === placeId;
   });
+  if (!place) {
+    throw new HttpError("Could not find the data for provided place id.", 404);
+  }
   res.json({ place });
 });
 
@@ -48,6 +52,11 @@ router.get("/user/:uid", (req, res, next) => {
   const place = DUMMY_PLACES.find((p) => {
     return p.creator === userId;
   });
+  if (!place) {
+    return next(
+      new HttpError("Could not find the data for provided user id.", 404)
+    );
+  }
 
   res.json({ place });
 });

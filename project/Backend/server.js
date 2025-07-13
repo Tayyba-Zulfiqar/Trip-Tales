@@ -1,5 +1,6 @@
 import express from "express";
 import placesRoutes from "./Routes/Places-routes.js";
+
 //create app using express:
 const app = express();
 
@@ -11,6 +12,16 @@ app.use(express.json());
 
 //using route as middleware:
 app.use("/api/places", placesRoutes);
+
+//for routes that dont exist:
+app.use((error, req, res, next) => {
+  if (res.headerSet) {
+    return next(error);
+  }
+  res
+    .status(error.code || 500)
+    .json({ message: error.message || "unknown error occured" });
+});
 //listen to incoming request:
 app.listen(PORT, () => {
   console.log(`server has started at PORT : ${PORT}`);
