@@ -6,6 +6,7 @@ import {
   updatePlace,
   deletePlace,
 } from "../controllers/controllers-places.js";
+import { check } from "express-validator"; //check --> method that return validation middleware
 
 //getting router from express package:
 const router = express.Router();
@@ -16,9 +17,21 @@ router.get("/:pid", getPlaceById);
 //Route setup to get place by user id:
 router.get("/user/:uid", getPlacesByUserId);
 
-router.post("/", createPlace);
+router.post(
+  "/",
+  [
+    check("title").not().isEmpty(),
+    check("description").isLength({ min: 5 }),
+    check("address").not().isEmpty(),
+  ],
+  createPlace
+);
 
-router.patch("/:pid", updatePlace);
+router.patch(
+  "/:pid",
+  [check("title").not().isEmpty(), check("description").isLength({ min: 5 })],
+  updatePlace
+);
 
 router.delete("/:pid", deletePlace);
 

@@ -1,7 +1,7 @@
 import express from "express";
 import placesRoutes from "./Routes/Places-routes.js";
 import HttpError from "./models/http-error.js";
-
+import userRoutes from "./Routes/Users-routes.js";
 //create app using express:
 const app = express();
 
@@ -13,6 +13,7 @@ app.use(express.json());
 
 //using route as middleware:
 app.use("/api/places", placesRoutes);
+app.use("/api/users", userRoutes);
 
 //middleware for requests that never be reached:
 app.use((req, res, next) => {
