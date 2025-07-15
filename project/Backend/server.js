@@ -2,6 +2,7 @@ import express from "express";
 import placesRoutes from "./Routes/Places-routes.js";
 import HttpError from "./models/http-error.js";
 import userRoutes from "./Routes/Users-routes.js";
+import mongoose from "mongoose";
 //create app using express:
 const app = express();
 
@@ -30,7 +31,15 @@ app.use((error, req, res, next) => {
     .status(error.code || 500)
     .json({ message: error.message || "unknown error occured" });
 });
-//listen to incoming request:
-app.listen(PORT, () => {
-  console.log(`server has started at PORT : ${PORT}`);
-});
+
+mongoose
+  .connect(
+    "mongodb+srv://tayybazulfiqar786:<RUe46pHb0GugUaJt>@cluster0.klvisno.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0"
+  )
+  .then(() => {
+    //listen to incoming request:
+    app.listen(PORT);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
