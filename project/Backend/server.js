@@ -3,43 +3,40 @@ import placesRoutes from "./Routes/Places-routes.js";
 import HttpError from "./models/http-error.js";
 import userRoutes from "./Routes/Users-routes.js";
 import mongoose from "mongoose";
-//create app using express:
-const app = express();
 
-//port set up:
+const app = express();
 const PORT = 5000;
 
-//Middleware: tell server to expect json data as incoming req
 app.use(express.json());
 
-//using route as middleware:
 app.use("/api/places", placesRoutes);
 app.use("/api/users", userRoutes);
 
-//middleware for requests that never be reached:
+// Handle undefined routes
 app.use((req, res, next) => {
-  const error = new HttpError("could not find this route", 404);
+  const error = new HttpError("Could not find this route", 404);
   throw error;
 });
 
-//for routes that dont exist:
+// Global error handler
 app.use((error, req, res, next) => {
-  if (res.headerSet) {
+  if (res.headersSent) {
     return next(error);
   }
   res
     .status(error.code || 500)
-    .json({ message: error.message || "unknown error occured" });
+    .json({ message: error.message || "Unknown error occurred" });
 });
 
 mongoose
   .connect(
-    "mongodb+srv://tayybazulfiqar786:<RUe46pHb0GugUaJt>@cluster0.klvisno.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://tayybazulfiqar786:FLJOjfdjuwiwinoA@cluster0.klvisno.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => {
-    //listen to incoming request:
-    app.listen(PORT);
+    app.listen(PORT, () => {
+      console.log(` Server is running at http://localhost:${PORT}`);
+    });
   })
   .catch((error) => {
-    console.log(error);
+    console.log("MongoDB connection failed:", error);
   });
