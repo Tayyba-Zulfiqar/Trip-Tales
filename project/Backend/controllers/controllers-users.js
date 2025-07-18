@@ -1,17 +1,6 @@
-import { v4 as uuid } from "uuid";
 import HttpError from "../models/http-error.js";
 import { validationResult } from "express-validator";
 import User from "../models/users.js";
-
-//dummy data:
-const DUMMY_USERS = [
-  {
-    id: "u1",
-    name: "tayyba",
-    email: "test@test.com",
-    password: "1233",
-  },
-];
 
 //get user middleware:
 
