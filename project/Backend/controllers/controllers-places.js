@@ -3,6 +3,8 @@ import { v4 as uuid } from "uuid";
 import { validationResult } from "express-validator";
 import getCoordsForAddress from "../utils/location.js";
 import Place from "../models/place.js";
+import User from "../models/users.js";
+import mongoose from "mongoose";
 
 // Dummy data (used only in delete logic)
 let DUMMY_PLACES = [
@@ -95,8 +97,25 @@ const createPlace = async (req, res, next) => {
     creator,
   });
 
+  let user;
   try {
-    await createdPlace.save();
+    user = await User.findById(creator);
+  } catch (err) {
+    return next(new HttpError("Creating place failed, please try again.", 500));
+  }
+
+  if (!user) {
+    return next(new HttpError("Could not find user for provided id", 404));
+  }
+
+  //creatings session and transactions
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+    await createdPlace.save({ session: sess });
+    user.places.push(createdPlace);
+    await user.save({ session: sess });
+    sess.commitTransaction();
   } catch (error) {
     return next(new HttpError("Creating place failed, please try again.", 500));
   }
