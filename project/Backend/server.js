@@ -9,6 +9,17 @@ const PORT = 5000;
 
 app.use(express.json());
 
+//attaching headers to all response for back-end and front-end connections:
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*"); //tell to which domain we can have access
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, content-type, Accept,Authorization "
+  ); //tell with which headers requests we should allow
+  res.setHeader("Access-Control-Allow-Methods", "GET , POST, DELETE, PATCH, "); //which mehtods can be sent from frontend
+  next();
+});
+
 app.use("/api/places", placesRoutes);
 app.use("/api/users", userRoutes);
 
@@ -30,7 +41,7 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(
-    "mongodb+srv://tayybazulfiqar786:FLJOjfdjuwiwinoA@cluster0.klvisno.mongodb.net/places?retryWrites=true&w=majority&appName=Cluster0"
+    "mongodb+srv://tayybazulfiqar786:FLJOjfdjuwiwinoA@cluster0.klvisno.mongodb.net/mern?retryWrites=true&w=majority&appName=Cluster0"
   )
   .then(() => {
     app.listen(PORT, () => {
