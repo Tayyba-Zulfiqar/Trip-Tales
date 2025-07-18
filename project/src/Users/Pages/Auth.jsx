@@ -41,12 +41,43 @@ export default function Authenticate(props) {
   //submission handler function:
   const authSubmitHandler = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
 
     //sending request to backend:
+
+    //LOG IN
     if (isLoginMode) {
-    } else {
       try {
-        setIsLoading(true);
+        const response = await fetch("http://localhost:5000/api/users/login", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formState.inputs.email.value,
+            password: formState.inputs.password.value,
+          }),
+        });
+
+        const responseData = await response.json(); //parse response
+
+        if (!response.ok) {
+          // res => 400/500
+          throw new Error(responseData.message);
+        }
+
+        setIsLoading(false);
+        auth.login(); // log in
+      } catch (error) {
+        console.log(error);
+        setIsLoading(false);
+        setIsError(error.message || "Something went wrong");
+      }
+    }
+
+    //SIGN UP:
+    else {
+      try {
         const response = await fetch("http://localhost:5000/api/users/signup", {
           method: "POST",
           headers: {
@@ -65,7 +96,6 @@ export default function Authenticate(props) {
           // res => 400/500
           throw new Error(responseData.message);
         }
-        console.log(responseData);
 
         setIsLoading(false);
         auth.login(); // log in
