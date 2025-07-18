@@ -166,15 +166,35 @@ const updatePlace = async (req, res, next) => {
 const deletePlace = async (req, res, next) => {
   const placeId = req.params.pid;
 
+  let place;
   try {
-    const deletedPlace = await Place.findByIdAndDelete(placeId);
-
-    if (!deletedPlace) {
-      return next(new HttpError("Place not found.", 404));
-    }
-
-    res.status(200).json({ message: "Place deleted successfully." });
+    place = await Place.findById(placeId).populate("creator");
   } catch (error) {
+    return next(
+      new HttpError("Could not delete place, please try again.", 500)
+    );
+  }
+
+  if (!place) {
+    return next(new HttpError("Could not find place with that ID.", 404));
+  }
+
+  try {
+    const sess = await mongoose.startSession();
+    sess.startTransaction();
+
+    await Place.deleteOne({ _id: placeId }, { session: sess });
+
+    place.creator.places.pull(place._id);
+    await place.creator.save({ session: sess });
+
+    await sess.commitTransaction();
+    sess.endSession();
+
+    console.log("Place deleted successfully.");
+    res.status(200).json({ message: "Place deleted" });
+  } catch (error) {
+    console.error("Error during deletion transaction:", error);
     return next(
       new HttpError("Could not delete place, please try again.", 500)
     );
