@@ -28,9 +28,12 @@ const useHttpClient = () => {
         setIsLoading(false);
         return responseData;
       } catch (error) {
+        if (error.name === "AbortError") {
+          return;
+        }
         setError(error.message || "Something went wrong!");
         setIsLoading(false);
-        throw error; // so caller can optionally catch it too
+        throw error;
       }
     },
     []
@@ -42,7 +45,8 @@ const useHttpClient = () => {
 
   useEffect(() => {
     return () => {
-      activeHttpRequests.current.forEach((abortCtrl) => abortCtrl.abort());
+      httpActiveRequest.current.forEach((abortCtrl) => abortCtrl.abort());
+      httpActiveRequest.current = [];
     };
   }, []);
 

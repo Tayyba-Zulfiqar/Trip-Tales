@@ -16,13 +16,16 @@ import AuthContext from "./src/Shared/Context/Auth-context.js";
 export default function App() {
   // managing login state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(false);
 
-  const login = useCallback(() => {
+  const login = useCallback((uid) => {
     setIsLoggedIn(true);
+    setUserId(uid);
   }, []);
 
   const logout = useCallback(() => {
     setIsLoggedIn(false);
+    setUserId(null);
   }, []);
 
   // define routes based on login status
@@ -65,8 +68,12 @@ export default function App() {
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn: isLoggedIn, login: login, logout: logout }}
-    >
+      value={{
+        isLoggedIn: isLoggedIn,
+        userId: userId,
+        login: login,
+        logout: logout,
+      }}>
       <Router>
         <MainNavigation />
         <main>{routes}</main>

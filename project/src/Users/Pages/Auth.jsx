@@ -67,7 +67,7 @@ export default function Authenticate(props) {
         }
 
         setIsLoading(false);
-        auth.login(); // log in
+        auth.login(responseData.user.id); // log in
       } catch (error) {
         console.log(error);
         setIsLoading(false);
@@ -98,7 +98,7 @@ export default function Authenticate(props) {
         }
 
         setIsLoading(false);
-        auth.login(); // log in
+        auth.login(responseData.user.id); // log in
       } catch (error) {
         console.log(error);
         setIsLoading(false);
