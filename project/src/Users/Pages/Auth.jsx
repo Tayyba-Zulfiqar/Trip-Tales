@@ -67,10 +67,9 @@ export default function Authenticate(props) {
         }
 
         setIsLoading(false);
-        console.log(responseData.user);
+
         auth.login(responseData.user.id); // log in
       } catch (error) {
-        console.log(error);
         setIsLoading(false);
         setIsError(error.message || "Something went wrong");
       }
@@ -101,7 +100,6 @@ export default function Authenticate(props) {
         setIsLoading(false);
         auth.login(responseData.user.id); // log in
       } catch (error) {
-        console.log(error);
         setIsLoading(false);
         setIsError(error.message || "Something went wrong");
       }

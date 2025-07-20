@@ -7,24 +7,27 @@ import LoadingSpinner from "../../Shared/Components/UI-Elements/LoadingSpinner";
 
 export default function UserPlaces() {
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
-  const [loadedPlace, setLoadedPlace] = useState(null);
+  const [loadedPlace, setLoadedPlace] = useState([]);
   const userId = useParams().userId;
 
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
-        console.log("Fetching places for userId:", userId);
         const response = await sendRequest(
           `http://localhost:5000/api/places/user/${userId}`
         );
-        console.log("API response:", response);
+
         setLoadedPlace(response.places || response);
-      } catch (err) {
-        console.error("Error:", err);
-      }
+      } catch (err) {}
     };
     fetchPlaces();
   }, [sendRequest, userId]);
+
+  const placeDeleteHandler = (deletedPlaceId) => {
+    setLoadedPlace((prevPlaces) =>
+      prevPlaces.filter((p) => p.id !== deletedPlaceId)
+    );
+  };
 
   return (
     <>
@@ -35,7 +38,7 @@ export default function UserPlaces() {
         </div>
       )}
       {!isLoading && loadedPlace ? (
-        <PlaceList items={loadedPlace} />
+        <PlaceList items={loadedPlace} onDeletePlace={placeDeleteHandler} />
       ) : (
         !isLoading && <p>No places found.</p>
       )}
