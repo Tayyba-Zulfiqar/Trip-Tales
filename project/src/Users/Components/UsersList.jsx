@@ -14,15 +14,17 @@ export default function UsersList(props) {
 
   return (
     <ul className="users-list">
-      {props.items.map((user) => (
-        <UsersItems
-          key={user.id}
-          id={user.id}
-          image={user.image}
-          name={user.name}
-          placeCount={user.places.length}
-        />
-      ))}
+      {props.items.map((user) => {
+        return (
+          <UsersItems
+            key={user.id}
+            id={user.id}
+            image={user.image}
+            name={user.name}
+            placeCount={user.places.length}
+          />
+        );
+      })}
     </ul>
   );
 }

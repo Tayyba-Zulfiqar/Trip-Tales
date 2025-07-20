@@ -1,35 +1,44 @@
 import { useParams } from "react-router-dom";
 import PlaceList from "../Components/PlaceList";
-
-const DUMMY_PLACES = [
-  {
-    id: "p1",
-    title: "Empire State Building",
-    description: "One of the most famous skyscrapers in the world",
-    imageUrl: "../../../Public/Imgs/place.jpg",
-    address: "20 W 34th St., New York, NY 10001",
-    location: {
-      lat: 40.7484405,
-      lng: -73.9878584,
-    },
-    creator: "u1",
-  },
-  {
-    id: "p2",
-    title: "Eiffel Tower",
-    description: "The most iconic landmark in Paris",
-    imageUrl: "../../../Public/Imgs/place.jpg",
-    address: "Champ de Mars, 5 Avenue Anatole France, 75007 Paris, France",
-    location: {
-      lat: 48.8584,
-      lng: 2.2945,
-    },
-    creator: "u2",
-  },
-];
+import useHttpClient from "../../Shared/Hooks/http-hook.js";
+import { useState, useEffect } from "react";
+import ErrorModal from "../../Shared/Components/UI-Elements/ErrorModal";
+import LoadingSpinner from "../../Shared/Components/UI-Elements/LoadingSpinner";
 
 export default function UserPlaces() {
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
+  const [loadedPlace, setLoadedPlace] = useState(null);
   const userId = useParams().userId;
-  const loadedPlaces = DUMMY_PLACES.filter((place) => place.creator === userId);
-  return <PlaceList items={loadedPlaces} />;
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        console.log("Fetching places for userId:", userId);
+        const response = await sendRequest(
+          `http://localhost:5000/api/places/user/${userId}`
+        );
+        console.log("API response:", response);
+        setLoadedPlace(response.places || response);
+      } catch (err) {
+        console.error("Error:", err);
+      }
+    };
+    fetchPlaces();
+  }, [sendRequest, userId]);
+
+  return (
+    <>
+      <ErrorModal error={error} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && loadedPlace ? (
+        <PlaceList items={loadedPlace} />
+      ) : (
+        !isLoading && <p>No places found.</p>
+      )}
+    </>
+  );
 }
