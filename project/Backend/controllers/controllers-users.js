@@ -44,7 +44,7 @@ const signUp = async (req, res, next) => {
     name,
     email,
     password, // ⚠️ Password should be hashed using bcrypt in production
-    image: "https://cdn-icons-png.flaticon.com/512/149/149071.png", // Default public avatar image
+    image: req.file.path, // path of img on server
     places: [],
   });
 

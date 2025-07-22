@@ -42,7 +42,7 @@ export default function Authenticate(props) {
   //submission handler function:
   const authSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
+
     setIsLoading(true);
 
     //sending request to backend:
@@ -80,16 +80,14 @@ export default function Authenticate(props) {
     //SIGN UP:
     else {
       try {
+        const formData = new FormData(); //can store any form of data
+        formData.append("name", formState.inputs.name.value);
+        formData.append("email", formState.inputs.email.value);
+        formData.append("password", formState.inputs.password.value);
+        formData.append("image", formState.inputs.image.value);
         const response = await fetch("http://localhost:5000/api/users/signup", {
           method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }),
+          body: formData, //its headers are automatically set by API
         });
 
         const responseData = await response.json(); //parse response
@@ -163,7 +161,13 @@ export default function Authenticate(props) {
               onInput={inputHandler}
             />
           )}
-          {!isLoginMode && <ImageUpload id="image" onInput={inputHandler} />}
+          {!isLoginMode && (
+            <ImageUpload
+              id="image"
+              onInput={inputHandler}
+              errorText="Please provide an image"
+            />
+          )}
           <Input
             element="input"
             id="email"

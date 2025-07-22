@@ -7,6 +7,7 @@ import {
   deletePlace,
 } from "../controllers/controllers-places.js";
 import { check } from "express-validator"; //check --> method that return validation middleware
+import fileUpload from "../Middlewares/file-upload.js";
 
 //getting router from express package:
 const router = express.Router();
@@ -19,6 +20,7 @@ router.get("/user/:uid", getPlacesByUserId);
 
 router.post(
   "/",
+  fileUpload.single("image"),
   [
     check("title").not().isEmpty(),
     check("description").isLength({ min: 5 }),

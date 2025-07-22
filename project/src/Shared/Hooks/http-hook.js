@@ -11,14 +11,22 @@ const useHttpClient = () => {
       setIsLoading(true);
       const httpAbortController = new AbortController();
       httpActiveRequest.current.push(httpAbortController);
+
       try {
-        const response = await fetch(url, {
+        const isFormData = body instanceof FormData;
+
+        const fetchOptions = {
           method,
-          headers,
           body,
           signal: httpAbortController.signal,
-        });
+        };
 
+        // Only add headers if body is NOT FormData
+        if (!isFormData) {
+          fetchOptions.headers = headers;
+        }
+
+        const response = await fetch(url, fetchOptions);
         const responseData = await response.json();
 
         if (!response.ok) {
@@ -52,4 +60,5 @@ const useHttpClient = () => {
 
   return { isLoading, error, sendRequest, clearError };
 };
+
 export default useHttpClient;

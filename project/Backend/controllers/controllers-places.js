@@ -4,6 +4,7 @@ import getCoordsForAddress from "../utils/location.js";
 import Place from "../models/place.js";
 import User from "../models/users.js";
 import mongoose from "mongoose";
+import fs from "fs";
 
 // GET /api/places/user/:uid
 const getPlacesByUserId = async (req, res, next) => {
@@ -42,6 +43,8 @@ const getPlaceById = async (req, res, next) => {
     );
   }
 
+  const imagePath = place.image;
+
   if (!place) {
     return next(new HttpError("No place found for the provided ID.", 404));
   }
@@ -66,7 +69,7 @@ const createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image: "../../../Public/Imgs/place.jpg", // you can make this dynamic later
+    image: req.file.path, //dynammically fetching
     creator,
   });
 
@@ -93,6 +96,7 @@ const createPlace = async (req, res, next) => {
     return next(new HttpError("Creating place failed, please try again.", 500));
   }
 
+  fs.unlink(imagePath, (err) => console.log(err));
   res.status(201).json({ place: createdPlace });
 };
 
