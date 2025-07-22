@@ -9,26 +9,20 @@ import LoadingSpinner from "../../Shared/Components/UI-Elements/LoadingSpinner";
 import ErrorModal from "../../Shared/Components/UI-Elements/ErrorModal";
 
 export default function PlaceItem(props) {
-  //using context hook:
   const auth = useContext(AuthContext);
-  //Managing states of map:
+
   const [showMap, setShowMap] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-  //Confirmation box state management:
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  //Map state managing functions:
   const openMapHandler = () => setShowMap(true);
   const closeMapHandler = () => setShowMap(false);
-  //Confirm box state managing functions:
   const showDeleteWarningHandler = () => setShowConfirmModal(true);
   const cancelDeleteHandler = () => setShowConfirmModal(false);
 
-  //function to delete place:
   const confirmDeleteHandler = async () => {
     setShowConfirmModal(false);
-
     try {
       await sendRequest(
         `http://localhost:5000/api/places/${props.id}`,
@@ -38,11 +32,10 @@ export default function PlaceItem(props) {
     } catch (e) {}
   };
 
-  //returning ui of component:
-
   return (
     <>
       <ErrorModal error={error} onClear={clearError} />
+
       <Modal
         show={showMap}
         onCancel={closeMapHandler}
@@ -71,6 +64,7 @@ export default function PlaceItem(props) {
             referrerPolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </Modal>
+
       <Modal
         show={showConfirmModal}
         onCancel={cancelDeleteHandler}
@@ -107,13 +101,14 @@ export default function PlaceItem(props) {
             <Button inverse onClick={openMapHandler}>
               View on map
             </Button>
-            {auth.isLoggedIn && (
-              <Button to={`/places/${props.id}`}>Edit</Button>
-            )}
-            {auth.isLoggedIn && (
-              <Button danger onClick={showDeleteWarningHandler}>
-                Delete
-              </Button>
+
+            {auth.userId === props.creatorId && (
+              <>
+                <Button to={`/places/${props.id}`}>Edit</Button>
+                <Button danger onClick={showDeleteWarningHandler}>
+                  Delete
+                </Button>
+              </>
             )}
           </div>
         </Card>

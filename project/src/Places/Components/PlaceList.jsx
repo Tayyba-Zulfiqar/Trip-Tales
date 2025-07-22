@@ -25,6 +25,7 @@ export default function PlaceList(props) {
           title={place.title}
           description={place.description}
           address={place.address}
+          creatorId={place.creator}
           coordinates={place.location}
           onDelete={props.onDeletePlace}
         />

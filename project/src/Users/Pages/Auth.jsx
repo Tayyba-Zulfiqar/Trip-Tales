@@ -12,6 +12,7 @@ import { useState, useContext } from "react";
 import AuthContext from "../../Shared/Context/Auth-context.js";
 import ErrorModal from "../../Shared/Components/UI-Elements/ErrorModal";
 import LoadingSpinner from "../../Shared/Components/UI-Elements/LoadingSpinner";
+import ImageUpload from "../../Shared/Components/FormElements/ImageUpload";
 
 export default function Authenticate(props) {
   //using context hook:
@@ -41,6 +42,7 @@ export default function Authenticate(props) {
   //submission handler function:
   const authSubmitHandler = async (event) => {
     event.preventDefault();
+    console.log(formState.inputs);
     setIsLoading(true);
 
     //sending request to backend:
@@ -113,6 +115,7 @@ export default function Authenticate(props) {
         {
           ...formState.inputs,
           name: undefined,
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -124,7 +127,12 @@ export default function Authenticate(props) {
             value: "",
             isValid: false,
           },
+          image: {
+            value: null,
+            isValid: false,
+          },
         },
+
         false
       );
     }
@@ -155,6 +163,7 @@ export default function Authenticate(props) {
               onInput={inputHandler}
             />
           )}
+          {!isLoginMode && <ImageUpload id="image" onInput={inputHandler} />}
           <Input
             element="input"
             id="email"
@@ -169,8 +178,8 @@ export default function Authenticate(props) {
             id="password"
             type="password"
             label="Password"
-            validators={[VALIDATOR_MINLENGTH(5)]}
-            errorText="Please enter a valid password(At least 5 characters)"
+            validators={[VALIDATOR_MINLENGTH(6)]}
+            errorText="Please enter a valid password(At least 6 characters)"
             onInput={inputHandler}
           />
           <Button type="submit" disabled={!formState.isValid}>
