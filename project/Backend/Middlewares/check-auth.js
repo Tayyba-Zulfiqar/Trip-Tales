@@ -33,6 +33,6 @@ export default function CheckAuth(req, res, next) {
     next();
   } catch (e) {
     // if split or verify failed:
-    return next(new HttpError("Authentication failed", 401));
+    return next(new HttpError("Authentication failed", 403));
   }
 }
