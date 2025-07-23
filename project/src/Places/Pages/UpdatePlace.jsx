@@ -77,6 +77,7 @@ export default function UpdatePlace(props) {
         "PATCH",
         {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + auth.token,
         },
         JSON.stringify({
           title: formState.inputs.title.value,
