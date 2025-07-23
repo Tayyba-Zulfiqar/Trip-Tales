@@ -1,4 +1,5 @@
 import express from "express";
+import CheckAuth from "../Middlewares/check-auth.js";
 import {
   getPlaceById,
   getPlacesByUserId,
@@ -12,11 +13,12 @@ import fileUpload from "../Middlewares/file-upload.js";
 //getting router from express package:
 const router = express.Router();
 
-//Route set up to get place by place id:
+//ACCESSABLE WITHOUT TOKEN:
 router.get("/:pid", getPlaceById);
-
-//Route setup to get place by user id:
 router.get("/user/:uid", getPlacesByUserId);
+
+//NOT ACCESSABLE WITHOUT VALID TOKEN:
+router.use(CheckAuth);
 
 router.post(
   "/",

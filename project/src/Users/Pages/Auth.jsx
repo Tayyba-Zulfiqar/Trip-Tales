@@ -70,7 +70,7 @@ export default function Authenticate(props) {
 
         setIsLoading(false);
 
-        auth.login(responseData.user.id); // log in
+        auth.login(responseData.userId, responseData.token); // log in
       } catch (error) {
         setIsLoading(false);
         setIsError(error.message || "Something went wrong");
@@ -98,7 +98,7 @@ export default function Authenticate(props) {
         }
 
         setIsLoading(false);
-        auth.login(responseData.user.id); // log in
+        auth.login(responseData.userId, responseData.token); // log in
       } catch (error) {
         setIsLoading(false);
         setIsError(error.message || "Something went wrong");

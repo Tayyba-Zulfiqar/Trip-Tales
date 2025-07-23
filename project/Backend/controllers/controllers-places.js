@@ -43,8 +43,6 @@ const getPlaceById = async (req, res, next) => {
     );
   }
 
-  const imagePath = place.image;
-
   if (!place) {
     return next(new HttpError("No place found for the provided ID.", 404));
   }
@@ -69,7 +67,7 @@ const createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image: req.file.path, //dynammically fetching
+    image: req.file.path, // Correct image path from multer
     creator,
   });
 
@@ -84,19 +82,19 @@ const createPlace = async (req, res, next) => {
     return next(new HttpError("Could not find user for provided id", 404));
   }
 
-  //creatings session and transactions
+  // Transaction for place creation and user update
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await createdPlace.save({ session: sess });
     user.places.push(createdPlace);
     await user.save({ session: sess });
-    sess.commitTransaction();
+    await sess.commitTransaction();
+    sess.endSession();
   } catch (error) {
     return next(new HttpError("Creating place failed, please try again.", 500));
   }
 
-  fs.unlink(imagePath, (err) => console.log(err));
   res.status(201).json({ place: createdPlace });
 };
 
@@ -156,21 +154,28 @@ const deletePlace = async (req, res, next) => {
     return next(new HttpError("Could not find place with that ID.", 404));
   }
 
+  const imagePath = place.image;
+
   try {
     const sess = await mongoose.startSession();
     sess.startTransaction();
     await Place.deleteOne({ _id: placeId }, { session: sess });
     place.creator.places.pull(place._id);
     await place.creator.save({ session: sess });
-
     await sess.commitTransaction();
     sess.endSession();
-    res.status(200).json({ message: "Place deleted" });
   } catch (error) {
     return next(
       new HttpError("Could not delete place, please try again.", 500)
     );
   }
+
+  // Delete associated image from disk
+  fs.unlink(imagePath, (err) => {
+    if (err) console.error("Image deletion failed:", err);
+  });
+
+  res.status(200).json({ message: "Place deleted" });
 };
 
 export {

@@ -1,16 +1,17 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 
 const useHttpClient = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false); // loading spinner
+  const [error, setError] = useState(); // modal error display
 
-  const httpActiveRequest = useRef([]);
+  const httpActiveRequest = useRef([]); // store abortController
 
   const sendRequest = useCallback(
     async (url, method = "GET", headers = {}, body = null) => {
+      headers = headers || {};
       setIsLoading(true);
-      const httpAbortController = new AbortController();
-      httpActiveRequest.current.push(httpAbortController);
+      const httpAbortController = new AbortController(); // abort request
+      httpActiveRequest.current.push(httpAbortController); // store every request abortCtrl
 
       try {
         const isFormData = body instanceof FormData;
@@ -21,9 +22,13 @@ const useHttpClient = () => {
           signal: httpAbortController.signal,
         };
 
-        // Only add headers if body is NOT FormData
+        // Handle headers
         if (!isFormData) {
-          fetchOptions.headers = headers;
+          fetchOptions.headers = { ...headers };
+        } else {
+          // Remove Content-Type but preserve Authorization and others
+          const { ["Content-Type"]: _, ...filteredHeaders } = headers;
+          fetchOptions.headers = filteredHeaders;
         }
 
         const response = await fetch(url, fetchOptions);
@@ -37,7 +42,7 @@ const useHttpClient = () => {
         return responseData;
       } catch (error) {
         if (error.name === "AbortError") {
-          return;
+          return; // ignore abort errors
         }
         setError(error.message || "Something went wrong!");
         setIsLoading(false);

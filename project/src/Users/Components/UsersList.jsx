@@ -4,7 +4,7 @@ import Card from "../../Shared/Components/UI-Elements/Card";
 export default function UsersList(props) {
   if (props.items.length === 0) {
     return (
-      <div class="center">
+      <div className="center">
         <Card>
           <h2>No user found</h2>
         </Card>
