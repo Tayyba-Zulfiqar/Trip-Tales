@@ -1,6 +1,8 @@
 import HttpError from "../models/http-error.js";
 import { validationResult } from "express-validator";
 import User from "../models/users.js";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 // GET ALL USERS
 const getUsers = async (req, res, next) => {
@@ -40,11 +42,18 @@ const signUp = async (req, res, next) => {
     );
   }
 
+  let hashedPassword;
+  try {
+    hashedPassword = await bcrypt.hash(password, 12);
+  } catch (e) {
+    return next(new HttpError("Could not create user.", 500));
+  }
+
   const createdUser = new User({
     name,
     email,
-    password, // ⚠️ Password should be hashed using bcrypt in production
-    image: req.file.path, // path of img on server
+    password: hashedPassword,
+    image: req.file.path, // path of image on server
     places: [],
   });
 
@@ -54,7 +63,26 @@ const signUp = async (req, res, next) => {
     return next(new HttpError("Signing up failed, please try again.", 500));
   }
 
-  res.status(201).json({ user: createdUser.toObject({ getters: true }) });
+  // Generate JWT token
+  let token;
+  try {
+    token = jwt.sign(
+      {
+        userId: createdUser.id,
+        email: createdUser.email,
+      },
+      "supersecret_dont_share",
+      {
+        expiresIn: "1h",
+      }
+    );
+  } catch (err) {
+    return next(new HttpError("Signing up failed, please try again.", 500));
+  }
+
+  res
+    .status(201)
+    .json({ userId: createdUser.id, email: createdUser.email, token: token });
 };
 
 // LOGIN
@@ -70,15 +98,49 @@ const logIn = async (req, res, next) => {
     );
   }
 
-  if (!identifiedUser || identifiedUser.password !== password) {
+  if (!identifiedUser) {
     return next(
       new HttpError("Invalid credentials, could not log you in.", 401)
     );
   }
 
-  res.json({
-    message: "Logged in successfully!",
-    user: identifiedUser.toObject({ getters: true }),
+  let isValidPassword = false;
+  try {
+    // Compare plain password with hashed password in DB
+    isValidPassword = await bcrypt.compare(password, identifiedUser.password);
+  } catch (err) {
+    return next(
+      new HttpError("Invalid credentials, could not log you in.", 500)
+    );
+  }
+
+  if (!isValidPassword) {
+    return next(
+      new HttpError("Invalid credentials, could not log you in.", 500)
+    );
+  }
+
+  // Generate JWT token
+  let token;
+  try {
+    token = jwt.sign(
+      {
+        userId: identifiedUser.id,
+        email: identifiedUser.email,
+      },
+      "supersecret_dont_share",
+      {
+        expiresIn: "1h",
+      }
+    );
+  } catch (err) {
+    return next(new HttpError("Logging in failed, please try again.", 500));
+  }
+
+  res.status(200).json({
+    userId: identifiedUser.id,
+    email: identifiedUser.email,
+    token: token,
   });
 };
 
