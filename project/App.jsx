@@ -4,7 +4,7 @@ import {
   Redirect,
   Switch,
 } from "react-router-dom";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Users from "./src/Users/Pages/Users";
 import NewPlaces from "./src/Places/Pages/NewPlaces";
 import MainNavigation from "./src/Shared/Components/Navigations/MainNavigation";
@@ -20,13 +20,26 @@ export default function App() {
 
   const login = useCallback((uid, token) => {
     setToken(token);
+    localStorage.setItem(
+      "userData",
+      JSON.stringify({ userId: uid, token: token })
+    );
     setUserId(uid);
   }, []);
 
   const logout = useCallback(() => {
     setToken(null);
     setUserId(null);
+    localStorage.removeItem("userData");
   }, []);
+
+  //check local storage:
+  useEffect(() => {
+    const storedData = JSON.parse(localStorage.getItem("userData"));
+    if (storedData && storedData.token) {
+      login(storedData.userId, storedData.token);
+    }
+  }, [login]);
 
   // define routes based on login status
   let routes;
