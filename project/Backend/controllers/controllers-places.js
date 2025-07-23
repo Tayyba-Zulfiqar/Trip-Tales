@@ -119,6 +119,11 @@ const updatePlace = async (req, res, next) => {
     );
   }
 
+  //if unathorized user try to edit place:
+  if (place.creator.toString() !== req.userData.userId) {
+    return next(new HttpError("You are not allowed to edit this place", 401));
+  }
+
   if (!place) {
     return next(new HttpError("Place not found.", 404));
   }
