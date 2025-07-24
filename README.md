@@ -66,7 +66,6 @@ A little app where users can **log their travel experiences**, **add memorable p
 
 - react-router-dom
 
-- axios
 
   
 ### 🐾 Clone the Repo
