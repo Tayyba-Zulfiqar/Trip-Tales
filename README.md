@@ -37,11 +37,6 @@ A little app where users can **log their travel experiences**, **add memorable p
 
 ---
 
-### 🐻 How to Run the Project
-
-> Make sure you have **Node.js**, **MongoDB**, and **Postman** installed locally 💻🌸
-
----
 ### 🧸 How to Run the Project
 
 > Make sure you have **Node.js**, **MongoDB**, and **Postman** installed locally 💻🌸
