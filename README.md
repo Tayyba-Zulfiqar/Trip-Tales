@@ -2,7 +2,7 @@
 
 Welcome to **Trip-Tales**! 🦋
 A little app where users can **log their travel experiences**, **add memorable places**, and **explore adventures shared by fellow wanderers** 🧁🌸  
-It’s secure and responsive 
+
 
 ---
 
